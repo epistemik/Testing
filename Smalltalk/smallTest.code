@@ -1,0 +1,55 @@
+" Run this program in the Workspace.
+  Index prints at each 1e6 for Smalltalk.
+  Test for performance and for an even distribution of Random numbers "
+
+| num index limit count i myTime |
+
+num := -1. 	"initial value to start the loop"
+index := 1. 	"number of times through the loop"
+limit := 19. 	"the value to randomize and cast"
+
+"count will keep track of the number of casts to each possible value"
+count := Array new: (limit+1) withAll: 0.
+
+"note start time"
+myTime := Time now.
+Transcript cr; show: 'Time: ', myTime printString.
+
+[ (num ~= (limit+2)) and: [index <= 10e6] ]
+whileTrue:
+	    [
+         num := (Random new next * limit) rounded.
+	     "print out result at each 1e6 times through the loop"
+         (index \\ 1e6 = 0)
+	     ifTrue:
+           [
+            Transcript cr; show: 'Index is ', index printString.
+            Transcript cr; show: 'Number is ', num printString.
+           ].
+         index := index + 1.
+         count at: (num+1) put: (count at: (num+1)) + 1.
+        ].
+
+"print out the final values if the loop ended early,
+ i.e. by reaching the target value"
+(index < 10e6) ifTrue:
+			[
+			 Transcript cr; show: 'Final index is ', (index - 1) printString.
+			 Transcript cr; show: 'Final number is ', num printString.
+			].
+
+"print out the final distribution of the cast values; they should be
+ present in about equal numbers if the random function really is random"
+i := 0.
+(limit+1) timesRepeat: 
+	[
+	 Transcript cr; show: 'Count [', i printString, '] is ', (count at: (i+1)) printString.
+	 i := i + 1.
+	].
+"note end time"
+myTime := Time now.
+Transcript cr; show: 'Time: ', myTime printString.
+
+" Dec 21, 2000: run time is ~306 sec for 10e6 loops
+  >> this is ~3000 sec for 10e7 loops, compared to ~10 sec for Delphi,
+     ~17 sec for C, and ~75 sec for Java!! "
