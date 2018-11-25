@@ -1,5 +1,8 @@
 .*
 *~
+# their own separate git repos now
+/C
+/Cpp
 !.gitignore
 *.zip
 *.bak
